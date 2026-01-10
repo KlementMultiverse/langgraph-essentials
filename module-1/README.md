@@ -69,6 +69,71 @@ python 02_chain_with_tool_calling.py
 
 ---
 
+### 03_router.py
+**Concepts:** Conditional Routing, Tool Execution
+
+A router that conditionally executes tools based on LLM decisions.
+
+**Flow:**
+```
+START → assistant → tools_condition → [tools OR END]
+```
+
+**Key Learning:**
+- Router pattern: LLM decides, then route to tool OR end
+- One tool call, then done (not a loop)
+
+---
+
+### 04_agent.py
+**Concepts:** ReAct Pattern, Agent Loop, Autonomous Execution
+
+A complete ReAct agent that uses multiple tools in sequence.
+
+**Flow:**
+```
+START → assistant → tools_condition → tools → assistant (LOOP) → END
+```
+
+**Run:**
+```bash
+python 04_agent.py
+python 04_agent.py --interactive  # Chat mode
+```
+
+**Key Learning:**
+- **Agent Loop**: Tools feed back to assistant for next decision
+- **ReAct**: Reason → Act → Observe → Repeat
+- **Autonomous**: Agent decides when task is complete
+- Can chain multiple tool calls to solve complex problems
+
+---
+
+### 05_agent_with_memory.py
+**Concepts:** Persistence, Checkpointers, Multi-turn Conversations
+
+An agent with memory that remembers previous conversations.
+
+**Flow:**
+```
+Same as 04_agent.py BUT with persistent state via checkpointer
+```
+
+**Run:**
+```bash
+python 05_agent_with_memory.py
+python 05_agent_with_memory.py --interactive  # Chat with memory
+```
+
+**Key Learning:**
+- **Checkpointer**: Saves state after each step
+- **Thread ID**: Identifies conversation threads
+- **Memory**: Agent remembers context from earlier messages
+- **Multi-turn**: Natural follow-up questions work
+- Example: "Add 3 and 4" → "Multiply that by 2" (knows "that" = 7)
+
+---
+
 ## Concepts Explained
 
 ### State

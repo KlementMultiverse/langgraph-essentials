@@ -1,0 +1,234 @@
+# LangGraph Git - Ignore Patterns
+# IMPORTANT: Never commit sensitive or personal files!
+
+# ===================================
+# SENSITIVE FILES - NEVER COMMIT
+# ===================================
+
+# Environment variables (CRITICAL - Contains API Keys!)
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
+
+# Personal markdown files
+**/notes.md
+**/NOTES.md
+**/personal*.md
+**/PERSONAL*.md
+**/my_notes.md
+**/todo.md
+**/TODO.md
+**/diary.md
+**/journal.md
+
+# ===================================
+# PYTHON
+# ===================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+lc-academy-env/
+langgraph-env/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# ===================================
+# JUPYTER NOTEBOOKS
+# ===================================
+
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# ===================================
+# LANGCHAIN / LANGGRAPH SPECIFIC
+# ===================================
+
+# LangSmith traces
+.langsmith/
+
+# ChromaDB
+chroma_db/
+*.chroma
+chroma_data/
+
+# Vector stores
+*.faiss
+*.index
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+state_db/
+
+# Checkpoints
+checkpoints/
+*.checkpoint
+
+# ===================================
+# IDEs & EDITORS
+# ===================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ===================================
+# OPERATING SYSTEM
+# ===================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===================================
+# LOGS & TEMPORARY FILES
+# ===================================
+
+*.log
+*.tmp
+*.temp
+logs/
+temp/
+tmp/
+
+# ===================================
+# CREDENTIALS & SECRETS
+# ===================================
+
+# SSH keys
+*.pem
+*.key
+*.pub
+id_rsa*
+id_ed25519*
+
+# API keys / tokens
+*secret*
+*token*
+*credentials*
+*.json.key
+
+# AWS
+.aws/
+
+# ===================================
+# DOCKER & DEPLOYMENT
+# ===================================
+
+docker-compose.override.yml
+.dockerignore
+
+# ===================================
+# MISC
+# ===================================
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# ===================================
+# PROJECT SPECIFIC EXCLUSIONS
+# ===================================
+
+# Experimental/scratch files
+scratch/
+experiments/drafts/
+test_*.py
+debug_*.py
+
+# Large model files
+*.bin
+*.safetensors
+*.gguf
+
+# Data files (if too large)
+data/
+datasets/
+*.csv
+*.parquet
+
+# ===================================
+# KEEP THESE FILES (Exceptions)
+# ===================================
+
+# We WANT to commit these:
+# - README.md (project documentation)
+# - GITHUB_WORKFLOW.md (workflow documentation)
+# - requirements.txt (dependencies)
+# - All .py files (implementation code)
+# - langgraph.json (graph configurations)
+.local_tracking/
