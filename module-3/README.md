@@ -96,6 +96,31 @@ python 03_dynamic_breakpoints.py
 
 ---
 
+### **Lesson 4: Time Travel** (`04_time_travel.py`)
+
+Learn to browse history, replay execution, and fork from past states.
+
+**Key Concepts:**
+- Checkpoint history navigation
+- Replaying from any checkpoint
+- Forking: creating alternate timelines
+- Error recovery patterns
+- A/B testing with multiple forks
+
+**Real-World Use Cases:**
+- Debugging by reproducing exact states
+- Error recovery (fork from before error)
+- User corrections mid-execution
+- A/B testing different approaches
+- Testing fixes with historical data
+
+**Run it:**
+```bash
+python 04_time_travel.py
+```
+
+---
+
 ## 🔥 Key Patterns Comparison
 
 | Pattern | When to Use | Pros | Cons |
@@ -103,6 +128,7 @@ python 03_dynamic_breakpoints.py
 | **Static Breakpoints** | Fixed approval points | Simple, predictable | Always interrupts, no context |
 | **State Editing** | User corrections needed | Full control, flexible | Requires careful state management |
 | **Dynamic Interrupts** | Conditional approval | Smart, contextual | More complex logic |
+| **Time Travel** | Debugging, recovery | Non-destructive, full history | Requires checkpointer overhead |
 
 ---
 
@@ -150,6 +176,22 @@ builder.add_edge("tools", "human_feedback")  # Loop back
 graph.compile(interrupt_before=["human_feedback"])
 ```
 
+### **5. Time Travel & Recovery**
+```python
+# Browse history
+all_states = list(graph.get_state_history(thread))
+
+# Replay from checkpoint
+graph.stream(None, all_states[2].config)
+
+# Fork: modify and continue
+fork_config = graph.update_state(
+    all_states[2].config,
+    {"messages": [HumanMessage(content="Corrected input", id=msg_id)]}
+)
+graph.stream(None, fork_config)
+```
+
 ---
 
 ## 🏗️ Architecture Patterns
@@ -174,6 +216,18 @@ START → validate → [CONDITIONAL INTERRUPT] → execute → END
             ↓              ↑
         if > threshold  User approves
         else auto-approve
+```
+
+### **Time Travel**
+```
+Timeline:
+  checkpoint_0 → checkpoint_1 → checkpoint_2 → checkpoint_3
+       ↓              ↓
+   [REPLAY]      [FORK HERE]
+       ↓              ↓
+   Same result   checkpoint_1_fork → new_checkpoint_2 → new_result
+                      ↑
+                 Modified state
 ```
 
 ---
@@ -228,12 +282,20 @@ print(state.tasks)       # Active tasks and interrupts
    - Allow multiple correction rounds
    - Build feedback loops for iterative refinement
 
-5. **Production Considerations**
+5. **Time Travel = Powerful Debugging**
+   - Browse complete execution history
+   - Replay to reproduce bugs
+   - Fork to test fixes or alternatives
+   - Non-destructive error recovery
+   - Think "Git for agent execution"
+
+6. **Production Considerations**
    - Always use checkpointers
    - Handle timeout scenarios
    - Log all human decisions
    - Provide audit trails
    - Test approval bypasses for automation
+   - Use time travel for debugging in production
 
 ---
 
