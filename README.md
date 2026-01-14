@@ -132,7 +132,7 @@ This repository follows strict security practices:
 | Module 1 | ✅ Complete | Simple graphs, ReAct agents, Memory |
 | Module 2 | ✅ Complete | State schemas, Reducers, Message handling |
 | Module 3 | ✅ Complete | Breakpoints, State editing, Dynamic interrupts |
-| Module 4 | ⏳ Not Started | - |
+| Module 4 | 🔄 In Progress | Parallelization (25% complete) |
 | Module 5 | ⏳ Not Started | - |
 | Module 6 | ⏳ Not Started | - |
 
@@ -165,7 +165,7 @@ This is a personal learning repository. Code examples follow LangChain's open-so
 
 ---
 
-**Last Updated**: 2026-01-13
+**Last Updated**: 2026-01-14
 **Course**: LangChain Academy - Introduction to LangGraph
 **Status**: Active Learning 🎓
-**Current Progress**: Module 3 Complete (3/6 modules)
+**Current Progress**: Module 4 Started (3.25/6 modules, 54%)
