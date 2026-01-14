@@ -89,15 +89,39 @@ python 02_sub_graphs.py
 
 ---
 
-### **Lesson 3: Map-Reduce** (`03_map_reduce.py`) ⏳ Coming Soon
+### **Lesson 3: Map-Reduce** (`03_map_reduce.py`) ✅
 
-Process multiple items in parallel using map-reduce patterns.
+Process multiple items in parallel using dynamic branching with the Send API.
 
 **Key Concepts:**
-- Send API for dynamic branching
-- Map: Apply operation to each item
-- Reduce: Combine results
-- Batch processing patterns
+- Send API for dynamic node creation
+- Map: Apply operation to each item (parallel)
+- Reduce: Combine all results
+- Batch processing at scale
+- Dynamic vs fixed branching
+
+**Patterns:**
+```
+                    ┌─→ process(item_1) ─┐
+                    │                     │
+START → map_items ──┼─→ process(item_2) ─┼─→ reduce → END
+                    │                     │
+                    └─→ process(item_N) ─┘
+
+Number of nodes created = len(items) at RUNTIME!
+```
+
+**Real-World Use Cases:**
+- Batch document processing (process 1000 docs)
+- Multi-topic research (generate content for N topics)
+- Competitive analysis (analyze multiple companies)
+- ETL pipelines (transform variable # of records)
+- Content generation at scale
+
+**Run it:**
+```bash
+python 03_map_reduce.py
+```
 
 ---
 
@@ -224,6 +248,30 @@ sub_builder = StateGraph(
 )
 ```
 
+### **Map-Reduce Pattern**
+```python
+from langgraph.constants import Send
+
+class State(TypedDict):
+    items: List[str]
+    results: Annotated[List, operator.add]  # REDUCER required!
+
+# MAP: Dynamic branching
+def map_step(state):
+    return [Send("process", {"item": item}) for item in state['items']]
+
+# PROCESS: Runs for each item
+def process(state):
+    return {"results": [f"Processed: {state['item']}"]}
+
+# REDUCE: Combine results
+def reduce_step(state):
+    return {"final": ", ".join(state['results'])}
+
+builder.add_conditional_edges(START, map_step)  # Dynamic!
+builder.add_edge("process", "reduce")
+```
+
 ---
 
 ## 🛠️ Technical Details
@@ -285,28 +333,50 @@ Speedup:       3x faster! ⚡
    Parent receives:  result (merged into parent state)
    ```
 
-6. **Real-World Impact**
+6. **Map-Reduce = Dynamic Parallelization**
+   - Number of nodes created at **runtime** (not design time)
+   - Use `Send()` API for dynamic branching
+   - Perfect for batch processing unknown # of items
+   - Three phases: Map → Process (parallel) → Reduce
+
+7. **Send API Pattern**
+   ```python
+   # Returns list of Send commands
+   return [Send("node", {"data": x}) for x in items]
+   ```
+   - Each Send creates a node instance
+   - All run in parallel
+   - Results combined by reducer
+
+8. **Parallelization vs Map-Reduce**
+   - **Parallelization**: Fixed nodes (search web + wiki)
+   - **Map-Reduce**: Dynamic nodes (process N documents)
+   - Use parallelization when # of operations known
+   - Use map-reduce when # of items varies
+
+9. **Real-World Impact**
    - Multi-source research: 40-60% faster
    - Concurrent API calls: Linear speedup
+   - Batch processing: Up to N× faster (N = # items)
    - Better user experience (lower latency)
    - Modular architecture: Easier to test and maintain
 
-7. **Design Principles**
-   - Identify independent operations
-   - Use appropriate reducers
-   - Use sub-graphs for logical modularity
-   - Define clear input/output contracts
-   - Consider failure handling
-   - Test with various timing scenarios
+10. **Design Principles**
+    - Identify independent operations
+    - Use appropriate reducers
+    - Use sub-graphs for logical modularity
+    - Use map-reduce for variable-size batches
+    - Define clear input/output contracts
+    - Consider failure handling
+    - Test with various timing scenarios
 
 ---
 
 ## 🚀 Next Steps
 
-After mastering Lessons 1-2, you're ready for:
+After mastering Lessons 1-3, you're ready for:
 
-- **Lesson 3**: Map-Reduce - Process multiple items in parallel
-- **Lesson 4**: Research Assistant - Complete multi-agent system
+- **Lesson 4**: Research Assistant - Bringing it all together (parallelization + sub-graphs + map-reduce)
 
 ---
 
@@ -315,6 +385,8 @@ After mastering Lessons 1-2, you're ready for:
 - [LangGraph Docs: Branching](https://langchain-ai.github.io/langgraph/how-tos/branching/)
 - [LangGraph Docs: Reducers](https://langchain-ai.github.io/langgraph/concepts/#reducers)
 - [LangGraph Docs: Sub-Graphs](https://langchain-ai.github.io/langgraph/how-tos/subgraph/)
+- [LangGraph Docs: Map-Reduce](https://langchain-ai.github.io/langgraph/how-tos/map-reduce/)
+- [LangGraph Docs: Send API](https://langchain-ai.github.io/langgraph/concepts/#send)
 - [LangGraph Docs: State Schemas](https://langchain-ai.github.io/langgraph/concepts/#state)
 - [Python operator module](https://docs.python.org/3/library/operator.html)
 
@@ -326,13 +398,13 @@ After mastering Lessons 1-2, you're ready for:
 |--------|--------|------------|
 | 1. Parallelization | ✅ Complete | 100% |
 | 2. Sub-Graphs | ✅ Complete | 100% |
-| 3. Map-Reduce | ⏳ Not Started | 0% |
+| 3. Map-Reduce | ✅ Complete | 100% |
 | 4. Research Assistant | ⏳ Not Started | 0% |
 
-**Module Progress:** 50% Complete (2/4 lessons)
+**Module Progress:** 75% Complete (3/4 lessons)
 
 ---
 
 **Status**: 🔄 In Progress
 **Last Updated**: 2026-01-14
-**Next Lesson**: Map-Reduce
+**Next Lesson**: Research Assistant
