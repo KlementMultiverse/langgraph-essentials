@@ -55,7 +55,41 @@ python 01_parallelization.py
 
 ---
 
-### **Lesson 2: Map-Reduce** (`02_map_reduce.py`) ⏳ Coming Soon
+### **Lesson 2: Sub-Graphs** (`02_sub_graphs.py`) ✅
+
+Build modular graphs by composing sub-graphs with separate state schemas.
+
+**Key Concepts:**
+- Sub-graphs as modular components
+- Input/output state schemas (`output_schema` parameter)
+- State communication through overlapping keys
+- Parallel sub-graph execution
+- Graph composition and reusability
+
+**Patterns:**
+```
+                    ┌─→ sub_graph_1 ─┐
+START → prepare ───┤                 ├─→ combine → END
+                    └─→ sub_graph_2 ─┘
+
+Each sub-graph has its own state schema!
+```
+
+**Real-World Use Cases:**
+- Multi-agent teams (each agent is a sub-graph)
+- Log analysis systems (failure + question analysis)
+- Modular ETL pipelines
+- Reusable workflow components
+- Independent service orchestration
+
+**Run it:**
+```bash
+python 02_sub_graphs.py
+```
+
+---
+
+### **Lesson 3: Map-Reduce** (`03_map_reduce.py`) ⏳ Coming Soon
 
 Process multiple items in parallel using map-reduce patterns.
 
@@ -64,18 +98,6 @@ Process multiple items in parallel using map-reduce patterns.
 - Map: Apply operation to each item
 - Reduce: Combine results
 - Batch processing patterns
-
----
-
-### **Lesson 3: Sub-Graphs** (`03_sub_graphs.py`) ⏳ Coming Soon
-
-Build modular graphs by composing sub-graphs.
-
-**Key Concepts:**
-- Graph composition
-- Modular design
-- Reusable components
-- State management across sub-graphs
 
 ---
 
@@ -176,6 +198,32 @@ builder.add_edge("search_wikipedia", "generate_answer")
 builder.add_edge(["b2", "c"], "d")
 ```
 
+### **Sub-Graph Composition**
+```python
+# Define sub-graph with separate state
+class SubGraphState(TypedDict):
+    input_data: str
+    result: str
+
+sub_builder = StateGraph(state_schema=SubGraphState)
+sub_graph = sub_builder.compile()
+
+# Use sub-graph as node in parent
+parent_builder.add_node("process", sub_graph)
+```
+
+### **Sub-Graph with Output Schema**
+```python
+# Control what data sub-graph returns
+class SubGraphOutputState(TypedDict):
+    result: str  # Only return result, not input_data
+
+sub_builder = StateGraph(
+    state_schema=SubGraphState,
+    output_schema=SubGraphOutputState  # Filters returned keys
+)
+```
+
 ---
 
 ## 🛠️ Technical Details
@@ -219,14 +267,35 @@ Speedup:       3x faster! ⚡
    - No partial results processed
    - Ensures data completeness
 
-4. **Real-World Impact**
+4. **Sub-Graphs = Modularity**
+   - Each sub-graph has its own state schema
+   - State communication through **overlapping keys**
+   - Use `output_schema` to control returned data
+   - Build reusable, composable components
+   - Run sub-graphs in parallel for independent tasks
+
+5. **State Communication Pattern**
+   ```
+   Parent provides:  cleaned_logs
+                          ↓
+   Sub-graph uses:   cleaned_logs → processes → generates result
+                          ↓
+   Sub-graph returns: result (filtered by output_schema)
+                          ↓
+   Parent receives:  result (merged into parent state)
+   ```
+
+6. **Real-World Impact**
    - Multi-source research: 40-60% faster
    - Concurrent API calls: Linear speedup
    - Better user experience (lower latency)
+   - Modular architecture: Easier to test and maintain
 
-5. **Design Principles**
+7. **Design Principles**
    - Identify independent operations
    - Use appropriate reducers
+   - Use sub-graphs for logical modularity
+   - Define clear input/output contracts
    - Consider failure handling
    - Test with various timing scenarios
 
@@ -234,10 +303,9 @@ Speedup:       3x faster! ⚡
 
 ## 🚀 Next Steps
 
-After mastering Lesson 1, you're ready for:
+After mastering Lessons 1-2, you're ready for:
 
-- **Lesson 2**: Map-Reduce - Process multiple items in parallel
-- **Lesson 3**: Sub-Graphs - Modular graph composition
+- **Lesson 3**: Map-Reduce - Process multiple items in parallel
 - **Lesson 4**: Research Assistant - Complete multi-agent system
 
 ---
@@ -246,6 +314,8 @@ After mastering Lesson 1, you're ready for:
 
 - [LangGraph Docs: Branching](https://langchain-ai.github.io/langgraph/how-tos/branching/)
 - [LangGraph Docs: Reducers](https://langchain-ai.github.io/langgraph/concepts/#reducers)
+- [LangGraph Docs: Sub-Graphs](https://langchain-ai.github.io/langgraph/how-tos/subgraph/)
+- [LangGraph Docs: State Schemas](https://langchain-ai.github.io/langgraph/concepts/#state)
 - [Python operator module](https://docs.python.org/3/library/operator.html)
 
 ---
@@ -255,11 +325,11 @@ After mastering Lesson 1, you're ready for:
 | Lesson | Status | Completion |
 |--------|--------|------------|
 | 1. Parallelization | ✅ Complete | 100% |
-| 2. Map-Reduce | ⏳ Not Started | 0% |
-| 3. Sub-Graphs | ⏳ Not Started | 0% |
+| 2. Sub-Graphs | ✅ Complete | 100% |
+| 3. Map-Reduce | ⏳ Not Started | 0% |
 | 4. Research Assistant | ⏳ Not Started | 0% |
 
-**Module Progress:** 25% Complete (1/4 lessons)
+**Module Progress:** 50% Complete (2/4 lessons)
 
 ---
 
